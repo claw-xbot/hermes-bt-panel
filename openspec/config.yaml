@@ -1,0 +1,27 @@
+schema: spec-driven
+
+# Project context
+context: |
+  Tech stack: Python 3.10+, requests
+  Project type: Hermes plugin for BT Panel API
+  Base URL: http://BT_PANEL_IP:8888
+  
+  Authentication:
+    - API Key + timestamp signature
+    - request_token = MD5(timestamp + MD5(api_key))
+    - All requests are POST with form data
+  
+  API endpoints pattern:
+    - /system?action=XXX - System info
+    - /site?action=XXX - Site management
+    - /data?action=getData&table=XXX - Data lists
+    - /plugin?action=a&name=XXX - Plugin calls
+
+# Per-artifact rules
+rules:
+  files:
+    - Single function = single API call
+    - Function names: snake_case
+    - Type hints: required
+    - docstring: required with @param descriptions
+    - Return: dict with API response parsed
