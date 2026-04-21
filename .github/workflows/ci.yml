@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          pip install pytest requests
+          
+      - name: Run tests
+        env:
+          BT_API_URL: ${{ secrets.BT_API_URL }}
+          BT_API_KEY: ${{ secrets.BT_API_KEY }}
+        run: |
+          # Syntax check
+          python -m py_compile src/btpanel/*.py src/btpanel/api/*.py
+          echo "Syntax check passed"
+          
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: success()

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-bt-panel"
+version = "0.1.0"
+description = "BT Panel API SDK for Hermes Agent"
+readme = "README.md"
+authors = [{name = "claw-xbot"}]
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.28.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/claw-xbot/hermes-bt-panel"
+Repository = "https://github.com/claw-xbot/hermes-bt-panel"
+
+[tool.setuptools.packages.find]
+where = ["src"]
