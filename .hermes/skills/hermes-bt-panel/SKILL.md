@@ -2,7 +2,7 @@
 name: hermes-bt-panel
 description: Hermes BT Panel 插件 - 让 AI Agent 管理宝塔面板。通过 BT Panel API 管理服务器（网站、SSL、数据库、Docker、计划任务等）。
 tags: [btpanel, baota, server, management, ssl, docker, website]
-version: 0.1.0
+version: 0.2.0
 author: claw-xbot
 license: MIT
 ---
@@ -76,6 +76,36 @@ ssl = get_ssl(client, "example.com")
 python3 test.py status          # 系统状态
 python3 test.py sites         # 网站列表
 python3 test.py ssl example.com # SSL 状态
+```
+
+## BT Panel API 注意事项
+
+### 认证方式
+```python
+import hashlib, time, requests
+
+def get_auth_headers(api_key):
+    ts = int(time.time())
+    token = hashlib.md5((str(ts) + hashlib.md5(api_key.encode()).hexdigest()).encode()).hexdigest()
+    return {"request_time": ts, "request_token": token}
+
+# 使用
+headers = get_auth_headers("API密钥")
+requests.post("http://IP:6888/api路径", data={"action": "XXX", **headers})
+```
+
+### API 返回值特殊处理
+- `status: false` + 有 `msg` = 真实错误
+- `status: false` + 无 `msg` = 返回数据正常（如 SSL 查询返回证书私钥）
+- 有些接口返回 `list` 而非 `dict`
+
+### 数据表查询格式
+```
+/data?action=getData&table=sites     # 网站
+/data?action=getData&table=databases # 数据库
+/data?action=getData&table=ftps     # FTP
+/data?action=getData&table=domain   # 域名
+/data?action=getData&table=backup   # 备份
 ```
 
 ## 作为 Hermes 工具使用
