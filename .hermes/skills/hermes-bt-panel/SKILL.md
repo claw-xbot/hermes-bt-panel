@@ -2,7 +2,7 @@
 name: hermes-bt-panel
 description: Hermes BT Panel 插件 - 让 AI Agent 管理宝塔面板。通过 BT Panel API 管理服务器（网站、SSL、数据库、Docker、计划任务等）。
 tags: [btpanel, baota, server, management, ssl, docker, website]
-version: 0.2.0
+version: 0.3.0
 author: claw-xbot
 license: MIT
 ---
@@ -60,15 +60,18 @@ ssl = get_ssl(client, "example.com")
 
 | 模块 | 函数数 | 说明 |
 |------|--------|------|
-| system | 3 | 系统状态、磁盘、网络 |
-| sites | 14 | 网站增删改查 |
+| system | 5 | 系统状态、磁盘、网络、任务检查、面板更新 |
+| sites | 26 | 网站增删改查、域名管理、PHP版本、伪静态、流量限制等 |
 | ssl | 5 | SSL 证书管理 |
 | database | 4 | 数据库管理 |
-| backup | 8 | 备份和 FTP |
-| docker | 10 | Docker 容器 |
+| backup | 3 | 备份管理 |
+| ftp | 3 | FTP 管理 |
+| docker | 10 | Docker 容器（需安装 Docker 插件） |
 | cron | 4 | 计划任务 |
 | files | 3 | 文件读写 |
 | system_settings | 6 | 面板设置 |
+
+**共 80 个 API 函数**
 
 ## CLI 测试
 
@@ -95,8 +98,9 @@ requests.post("http://IP:6888/api路径", data={"action": "XXX", **headers})
 ```
 
 ### API 返回值特殊处理
-- `status: false` + 有 `msg` = 真实错误
-- `status: false` + 无 `msg` = 返回数据正常（如 SSL 查询返回证书私钥）
+- `status: false` + `msg` 是字符串 = **真实错误**
+- `status: false` + `msg` 是 dict/list = **正常响应**（如 UpdatePanel 返回更新信息）
+- `status: false` + 无 `msg` = **正常响应**（如 SSL 查询返回私钥）
 - 有些接口返回 `list` 而非 `dict`
 
 ### 数据表查询格式
@@ -106,7 +110,14 @@ requests.post("http://IP:6888/api路径", data={"action": "XXX", **headers})
 /data?action=getData&table=ftps     # FTP
 /data?action=getData&table=domain   # 域名
 /data?action=getData&table=backup   # 备份
+/data?action=getData&table=logs     # 面板日志
 ```
+
+### 面板版本差异
+- 面板 11.5.0 中 `/panel?action=*` 系列接口返回 404
+- 使用 `/panel/public/get_public_config` 获取公共配置
+- 使用 `/data?action=getData&table=logs` 获取面板日志
+- Docker 接口需要安装 Docker 管理插件
 
 ## 作为 Hermes 工具使用
 
@@ -119,3 +130,9 @@ xbot.my 的 SSL 证书什么时候到期
 ```
 
 需要先配置 `src/btpanel/__init__.py` 里的连接信息。
+
+## 测试环境
+
+本机: 192.168.69.101:6888
+- 面板版本: 11.5.0
+- 已验证: 16/16 只读接口通过

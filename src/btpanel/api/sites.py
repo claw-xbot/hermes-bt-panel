@@ -304,8 +304,288 @@ def set_site_notes(
     site = get_site(client, site_name)
     if not site:
         raise ValueError(f"Site not found: {site_name}")
-    
+
     return client.request("/data?action=setPs&table=sites", {
         "id": str(site["id"]),
         "ps": notes,
+    })
+
+
+# 以下是官方文档中有但尚未实现的接口
+
+def get_site_types(client: BTPanelClient) -> Any:
+    """
+    获取网站分类列表
+
+    @param client: BTPanelClient 实例
+    @return: 分类列表
+    """
+    return client.request("/site?action=get_site_types")
+
+
+def get_php_versions(client: BTPanelClient) -> Any:
+    """
+    获取已安装的 PHP 版本列表
+
+    @param client: BTPanelClient 实例
+    @return: PHP 版本列表
+    """
+    return client.request("/site?action=GetPHPVersion")
+
+
+def set_site_edate(
+    client: BTPanelClient,
+    site_name: str,
+    edate: str,
+) -> Any:
+    """
+    设置网站到期时间
+
+    @param client: BTPanelClient 实例
+    @param site_name: 网站域名
+    @param edate: 到期时间，格式 2025-01-01，永久：0000-00-00
+    @return: 操作结果
+    """
+    site = get_site(client, site_name)
+    if not site:
+        raise ValueError(f"Site not found: {site_name}")
+
+    return client.request("/site?action=SetEdate", {
+        "id": str(site["id"]),
+        "edate": edate,
+    })
+
+
+def get_rewrite_list(
+    client: BTPanelClient,
+    site_name: str,
+) -> Any:
+    """
+    获取可选的预定义伪静态列表
+
+    @param client: BTPanelClient 实例
+    @param site_name: 网站域名
+    @return: 伪静态规则列表
+    """
+    return client.request("/site?action=GetRewriteList", {
+        "siteName": site_name,
+    })
+
+
+def get_dir_user_ini(
+    client: BTPanelClient,
+    site_id: int,
+    site_path: str,
+) -> Any:
+    """
+    获取防跨站配置/运行目录/日志开关状态
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @param site_path: 网站根目录
+    @return: 配置信息
+    """
+    return client.request("/site?action=GetDirUserINI", {
+        "id": str(site_id),
+        "path": site_path,
+    })
+
+
+def set_dir_user_ini(
+    client: BTPanelClient,
+    site_path: str,
+) -> Any:
+    """
+    设置防跨站状态（自动取反）
+
+    @param client: BTPanelClient 实例
+    @param site_path: 网站根目录
+    @return: 操作结果
+    """
+    return client.request("/site?action=SetDirUserINI", {
+        "path": site_path,
+    })
+
+
+def open_site_logs(
+    client: BTPanelClient,
+    site_id: int,
+) -> Any:
+    """
+    开启网站访问日志
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @return: 操作结果
+    """
+    return client.request("/site?action=logsOpen", {
+        "id": str(site_id),
+    })
+
+
+def set_site_path(
+    client: BTPanelClient,
+    site_id: int,
+    new_path: str,
+) -> Any:
+    """
+    修改网站根目录
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @param new_path: 新的网站根目录
+    @return: 操作结果
+    """
+    return client.request("/site?action=SetPath", {
+        "id": str(site_id),
+        "path": new_path,
+    })
+
+
+def set_site_run_path(
+    client: BTPanelClient,
+    site_id: int,
+    run_path: str,
+) -> Any:
+    """
+    设置网站运行目录
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @param run_path: 基于网站根目录的运行目录，如 /public
+    @return: 操作结果
+    """
+    return client.request("/site?action=SetSiteRunPath", {
+        "id": str(site_id),
+        "runPath": run_path,
+    })
+
+
+def set_site_password(
+    client: BTPanelClient,
+    site_id: int,
+    username: str,
+    password: str,
+) -> Any:
+    """
+    设置网站密码访问
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @param username: 用户名
+    @param password: 密码
+    @return: 操作结果
+    """
+    return client.request("/site?action=SetHasPwd", {
+        "id": str(site_id),
+        "username": username,
+        "password": password,
+    })
+
+
+def close_site_password(
+    client: BTPanelClient,
+    site_id: int,
+) -> Any:
+    """
+    关闭网站密码访问
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @return: 操作结果
+    """
+    return client.request("/site?action=CloseHasPwd", {
+        "id": str(site_id),
+    })
+
+
+def get_limit_net(
+    client: BTPanelClient,
+    site_id: int,
+) -> Any:
+    """
+    获取流量限制配置（仅支持 nginx）
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @return: 流量限制配置
+    """
+    return client.request("/site?action=GetLimitNet", {
+        "id": str(site_id),
+    })
+
+
+def set_limit_net(
+    client: BTPanelClient,
+    site_id: int,
+    perserver: int,
+    perip: int,
+    limit_rate: int,
+) -> Any:
+    """
+    开启或保存流量限制配置（仅支持 nginx）
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @param perserver: 并发限制
+    @param perip: 单 IP 限制
+    @param limit_rate: 流量限制 (KB)
+    @return: 操作结果
+    """
+    return client.request("/site?action=SetLimitNet", {
+        "id": str(site_id),
+        "perserver": str(perserver),
+        "perip": str(perip),
+        "limit_rate": str(limit_rate),
+    })
+
+
+def close_limit_net(
+    client: BTPanelClient,
+    site_id: int,
+) -> Any:
+    """
+    关闭流量限制（仅支持 nginx）
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @return: 操作结果
+    """
+    return client.request("/site?action=CloseLimitNet", {
+        "id": str(site_id),
+    })
+
+
+def get_index(
+    client: BTPanelClient,
+    site_id: int,
+) -> Any:
+    """
+    获取默认文档信息
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @return: 默认文档列表
+    """
+    return client.request("/site?action=GetIndex", {
+        "id": str(site_id),
+    })
+
+
+def set_index(
+    client: BTPanelClient,
+    site_id: int,
+    index: str,
+) -> Any:
+    """
+    设置默认文档
+
+    @param client: BTPanelClient 实例
+    @param site_id: 网站 ID
+    @param index: 默认文档，逗号分隔，如 index.php,index.html
+    @return: 操作结果
+    """
+    return client.request("/site?action=SetIndex", {
+        "id": str(site_id),
+        "Index": index,
     })

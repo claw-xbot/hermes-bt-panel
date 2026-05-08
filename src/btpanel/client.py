@@ -63,12 +63,17 @@ class BTPanelClient:
         resp.raise_for_status()
 
         result = resp.json()
-        
-        # BT Panel API 有些接口返回 status:false 但数据正常（如 SSL 查询返回私钥）
-        # 只有当 status:false 且有 msg 字段时才报错
-        if isinstance(result, dict) and result.get("status") is False and "msg" in result:
-            raise BTPanelError(result.get("msg", "Unknown error"))
-        
+
+        # BT Panel API 错误处理:
+        # - status:false + msg是字符串 = 真实错误
+        # - status:false + msg是dict/list = 正常响应（如 UpdatePanel 返回更新信息）
+        # - status:false + 无msg = 正常响应（如 SSL 查询返回私钥）
+        if isinstance(result, dict) and result.get("status") is False:
+            msg = result.get("msg", "")
+            if isinstance(msg, str) and msg:
+                raise BTPanelError(msg)
+            # 如果 msg 是 dict/list 或空字符串，视为正常响应
+
         return result
 
     def close(self):

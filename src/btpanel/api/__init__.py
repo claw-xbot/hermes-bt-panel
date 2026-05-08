@@ -6,6 +6,8 @@ from .system import (
     get_system_total,
     get_disk_info,
     get_network,
+    get_task_count,
+    check_panel_update,
 )
 
 from .sites import (
@@ -15,6 +17,29 @@ from .sites import (
     delete_site,
     start_site,
     stop_site,
+    set_site_php_version,
+    get_site_domains,
+    add_domain,
+    delete_domain,
+    get_site_logs,
+    set_site_notes,
+    # 新增
+    get_site_types,
+    get_php_versions,
+    set_site_edate,
+    get_rewrite_list,
+    get_dir_user_ini,
+    set_dir_user_ini,
+    open_site_logs,
+    set_site_path,
+    set_site_run_path,
+    set_site_password,
+    close_site_password,
+    get_limit_net,
+    set_limit_net,
+    close_limit_net,
+    get_index,
+    set_index,
 )
 
 from .ssl import (
@@ -22,6 +47,7 @@ from .ssl import (
     set_ssl,
     http_to_https,
     close_https,
+    close_ssl,
 )
 
 from .database import (
@@ -37,6 +63,7 @@ from .backup import (
     delete_backup,
     get_ftps,
     set_ftp_password,
+    set_ftp_status,
 )
 
 from .docker import (
@@ -79,6 +106,8 @@ __all__ = [
     "get_system_total",
     "get_disk_info",
     "get_network",
+    "get_task_count",
+    "check_panel_update",
     # Sites
     "get_websites",
     "get_site",
@@ -86,11 +115,34 @@ __all__ = [
     "delete_site",
     "start_site",
     "stop_site",
+    "set_site_php_version",
+    "get_site_domains",
+    "add_domain",
+    "delete_domain",
+    "get_site_logs",
+    "set_site_notes",
+    "get_site_types",
+    "get_php_versions",
+    "set_site_edate",
+    "get_rewrite_list",
+    "get_dir_user_ini",
+    "set_dir_user_ini",
+    "open_site_logs",
+    "set_site_path",
+    "set_site_run_path",
+    "set_site_password",
+    "close_site_password",
+    "get_limit_net",
+    "set_limit_net",
+    "close_limit_net",
+    "get_index",
+    "set_index",
     # SSL
     "get_ssl",
     "set_ssl",
     "http_to_https",
     "close_https",
+    "close_ssl",
     # Database
     "get_databases",
     "set_database_password",
@@ -103,6 +155,7 @@ __all__ = [
     # FTP
     "get_ftps",
     "set_ftp_password",
+    "set_ftp_status",
     # Docker
     "get_containers",
     "get_container_stats",

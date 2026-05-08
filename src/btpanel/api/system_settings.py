@@ -16,7 +16,9 @@ def get_panel_config(
     @param client: BTPanelClient 实例
     @return: 面板配置信息
     """
-    return client.request("/panel?action=GetPanelConfig")
+    # 注意: 面板 11.5.0 中 /panel?action=GetPanelConfig 返回 404
+    # 使用 /panel/public/get_public_config 获取公共配置
+    return client.request("/panel/public/get_public_config")
 
 
 def set_panel_config(
@@ -30,6 +32,7 @@ def set_panel_config(
     @param config: 配置项字典
     @return: 操作结果
     """
+    # 注意: 面板 11.5.0 中此接口可能不可用
     return client.request(
         "/panel?action=SetPanelConfig",
         params=config,
@@ -57,6 +60,8 @@ def get_ssl_status(
     @param client: BTPanelClient 实例
     @return: SSL状态
     """
+    # 注意: 面板 11.5.0 中 /panel?action=GetSSL 返回 404
+    # 此接口可能不可用
     return client.request("/panel?action=GetSSL")
 
 
@@ -71,6 +76,7 @@ def set_panel_password(
     @param password: 新密码
     @return: 操作结果
     """
+    # 注意: 面板 11.5.0 中此接口可能不可用
     return client.request(
         "/panel?action=SetPassword",
         params={"password": password},
@@ -90,8 +96,10 @@ def get_panel_logs(
     @param limit: 每页数量
     @return: 日志列表
     """
+    # 注意: 面板 11.5.0 中 /panel?action=GetLogs 返回 404
+    # 使用 /data?action=getData&table=logs 获取日志
     return client.request(
-        "/panel?action=GetLogs",
+        "/data?action=getData&table=logs",
         params={
             "p": str(page),
             "limit": str(limit),
